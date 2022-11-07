@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"
 
 export const Login = () => {
@@ -6,6 +6,32 @@ export const Login = () => {
   const [password, setPassword] = useState('');
 
   const navigateTo = useNavigate();
+
+// Desta forma, fora do useEffect fica repetindo direto a mensagem.
+/* 
+  if (window.confirm("Você é homem?")) {
+    console.log("Homem");
+  } else {
+    console.log("Mulher");
+  }
+*/
+
+  // Com useEffect executa uma vez só
+  useEffect(() => {
+    if (window.confirm("Você é homem?")) {
+      console.log("Homem");
+    } else {
+      console.log("Mulher");
+    }
+  }, []);
+
+  useEffect(() => {
+    console.log("E-Mail:", email)
+  }, [email]);
+
+  useEffect(() => {
+    console.log("Senha:", password)
+  }, [password]);
 
   const handleClick = () => {
     navigateTo('/pagina-inicial')
