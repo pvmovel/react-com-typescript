@@ -1,7 +1,10 @@
-
+import { Link } from "react-router-dom"
 
 export const Dashboard = () => {
   return (
-    <p>Dashboard</p>
+    <div>
+      <h1>Dashboard</h1>
+      <Link to='/entrar'>Login</Link>
+    </div>
   )
 }
