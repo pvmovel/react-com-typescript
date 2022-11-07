@@ -1,22 +1,64 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom"
 
 export const Login = () => {
+  // useRef pega a referência de um objeto
+  const inputPasswordRef = useRef<HTMLInputElement>(null);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const navigateTo = useNavigate();
 
-// Desta forma, fora do useEffect fica repetindo direto a mensagem.
-/* 
-  if (window.confirm("Você é homem?")) {
-    console.log("Homem");
-  } else {
-    console.log("Mulher");
-  }
-*/
+  /* useCallback
+  é um gancho de reação que retorna um retorno de chamada memoized 
+  quando passado uma função e uma lista de dependências como parâmetros. 
+  É muito útil quando um componente está passando um retorno de chamada 
+  para seu componente filho para evitar a renderização do componente filho. 
+  Ele apenas altera o retorno de chamada quando uma de suas dependências é alterada.
+  */
+  // !!! O useCallback não é executado no render !!!
+  const handleClick = useCallback(() => {
+    navigateTo('/pagina-inicial')
+  }, [navigateTo])
 
-  // Com useEffect executa uma vez só
+  const handleEntrar = useCallback(() => {
+    if (email === 'jose@demaria.com' && password === 'Jesus') {
+      console.log('Acesso Autorizado');
+    } else {
+      console.log('Usuário Desconhecido');
+    }
+    if (inputPasswordRef.current !== null) {
+      inputPasswordRef.current.focus();
+    }
+  }, [email, password])
+
+  /* useMemo
+  é semelhante ao gancho useCallback, pois aceita uma função e uma lista de dependências, 
+  mas retorna o valor memorizado retornado pela função passada. 
+  Ele recalculou o valor apenas quando uma de suas dependências mudou. 
+  É útil evitar cálculos caros em cada renderização quando o valor retornado não vai mudar.
+  */
+  // useMemo() so atualiza quando a propriedade for atualizada
+  const emailLength = useMemo(() => {
+    return email.length * 1000;
+  }, [email.length]);
+
+  /* useEffect
+  Um gancho que nos ajuda a realizar mutações, assinaturas, temporizadores, 
+  registro e outros efeitos colaterais depois que todos os componentes foram renderizados. 
+  O useEffect aceita uma função de natureza imperativa e uma lista de dependências. 
+  Quando suas dependências mudam, ele executa a função passada.
+  */
+  // Se usar desta forma, fora do useEffect fica repetindo direto a mensagem.
+  /* 
+    if (window.confirm("Você é homem?")) {
+      console.log("Homem");
+    } else {
+      console.log("Mulher");
+    }
+  */
+
   useEffect(() => {
     if (window.confirm("Você é homem?")) {
       console.log("Homem");
@@ -33,31 +75,30 @@ export const Login = () => {
     console.log("Senha:", password)
   }, [password]);
 
-  const handleClick = () => {
-    navigateTo('/pagina-inicial')
-  }
-
-  const handleEntrar = () => {
-    if (email === 'jose@demaria.com' && password === 'Jesus') {
-      console.log('Acesso Autorizado');
-    } else {
-      console.log('Usuário Desconhecido');
-    }
-  }
 
   return (
     <div>
       <h1>Login</h1>
+      <p>Quantidade de caracteres no e-mail: {emailLength}</p>
       <form>
         
         <label>
           <span>E-Mail: </span>
-          <input value={email} onChange={e => setEmail(e.target.value)} />
+          <input 
+            value={email} 
+            onKeyDown={e => e.key === 'Enter' ? inputPasswordRef.current?.focus() : undefined}
+            onChange={e => setEmail(e.target.value)} 
+            />
         </label>
         <p />
         <label>
           <span>Senha: </span>
-          <input type='password' value={password} onChange={e => setPassword(e.target.value)} />
+          <input 
+            type='password' 
+            ref={inputPasswordRef}
+            value={password} 
+            onChange={e => setPassword(e.target.value)} 
+          />
         </label>
         <p />
         <button type="button" onClick={handleEntrar}>
