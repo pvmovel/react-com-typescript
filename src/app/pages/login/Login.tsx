@@ -20,7 +20,7 @@ export const Login = () => {
   Ele apenas altera o retorno de chamada quando uma de suas dependências é alterada.
   */
   // !!! O useCallback não é executado no render !!!
-  const handleClick = useCallback(() => {
+  const handleToHome = useCallback(() => {
     navigateTo('/pagina-inicial')
   }, [navigateTo])
 
@@ -106,7 +106,7 @@ export const Login = () => {
         <ButtonLogin type="button" onClick={handleEntrar}>Entrar</ButtonLogin>
       </form>
       <p />
-      <button onClick={handleClick}>Pagina Inicial</button>
+      <button onClick={handleToHome}>Pagina Inicial</button>
     </div>
   )
 }
