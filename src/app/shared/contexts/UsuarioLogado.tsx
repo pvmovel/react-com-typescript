@@ -4,7 +4,7 @@ interface IUsuarioLogadoContextData {
   nomeDoUsuario: string;
 }
 
-const UsuarioLogadoContext = createContext<IUsuarioLogadoContextData>({} as IUsuarioLogadoContextData);
+export const UsuarioLogadoContext = createContext<IUsuarioLogadoContextData>({} as IUsuarioLogadoContextData);
 
 interface IUsuarioLogadoProvider {
   children: ReactNode;

@@ -1,9 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom"
+import { useUsuarioLogado } from "../../shared/hooks";
 import { ButtonLogin } from "./components/ButtonLogin";
 import { InputLogin } from "./components/InputLogin";
 
 export const Login = () => {
+
+  const { nomeDoUsuario } = useUsuarioLogado();
+  
   // useRef pega a referência de um objeto
   const inputPasswordRef = useRef<HTMLInputElement>(null);
 
@@ -81,6 +85,7 @@ export const Login = () => {
   return (
     <div>
       <h1>Login</h1>
+      <h2>Usuário Logado: {nomeDoUsuario}</h2>
       <p>Quantidade de caracteres no e-mail: {emailLength}</p>
       <form>
         
