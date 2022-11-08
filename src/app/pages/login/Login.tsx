@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom"
+import { ButtonLogin } from "./components/ButtonLogin";
+import { InputLogin } from "./components/InputLogin";
 
 export const Login = () => {
   // useRef pega a referência de um objeto
@@ -82,29 +84,26 @@ export const Login = () => {
       <p>Quantidade de caracteres no e-mail: {emailLength}</p>
       <form>
         
-        <label>
-          <span>E-Mail: </span>
-          <input 
-            value={email} 
-            onKeyDown={e => e.key === 'Enter' ? inputPasswordRef.current?.focus() : undefined}
-            onChange={e => setEmail(e.target.value)} 
-            />
-        </label>
-        <p />
-        <label>
-          <span>Senha: </span>
-          <input 
-            type='password' 
-            ref={inputPasswordRef}
-            value={password} 
-            onChange={e => setPassword(e.target.value)} 
-          />
-        </label>
-        <p />
-        <button type="button" onClick={handleEntrar}>
-          Entrar
-        </button>
+        <InputLogin 
+          label="E-Mail: "
+          value={email}
+          onChange={(newValue) => setEmail(newValue)}
+          onPressEnter={() => inputPasswordRef.current?.focus()}
+        />
 
+        <p />
+
+        <InputLogin 
+          label="Senha: "
+          type="password"
+          value={password}
+          ref={inputPasswordRef}
+          onChange={(newValue) => setPassword(newValue)}
+        />
+
+        <p />
+
+        <ButtonLogin type="button" onClick={handleEntrar}>Entrar</ButtonLogin>
       </form>
       <p />
       <button onClick={handleClick}>Pagina Inicial</button>
