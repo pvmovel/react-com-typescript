@@ -7,8 +7,14 @@ export const Dashboard = () => {
 
   const { nomeDoUsuario, logout } = useUsuarioLogado();
 
+  interface IListaComCheckBox {
+    title: string;
+    isSelected: boolean
+  }
   const [lista, setLista] = useState<string[]>(['Test 1', 'Test 2', 'Test 3']);
-
+  
+  const [listaComCheckbox, setListaComCheckbox] = useState<IListaComCheckBox[]>([]);
+  
   const handleInputKeyDown: KeyboardEventHandler<HTMLInputElement> = useCallback((e) => {
     if (e.key === "Enter") {
       // não precisa porque a de baixo ja comporta
@@ -27,6 +33,28 @@ export const Dashboard = () => {
     }
   }, []);
 
+  const handleInputKeyDownComCheckbox: KeyboardEventHandler<HTMLInputElement> = useCallback((e) => {
+    if (e.key === "Enter") {
+      if(e.currentTarget.value.trim().length === 0) return;
+      
+      const valueComCheckbox = e.currentTarget.value;
+      e.currentTarget.value = '';
+      setListaComCheckbox((oldListaComCheckbox) => { 
+        // Verifica se o valor digitado já existe na lista
+        if (oldListaComCheckbox.some((listItem) => listItem.title === valueComCheckbox)) return oldListaComCheckbox;
+        
+        // caso não exista adiciona
+        return [
+          ...oldListaComCheckbox, 
+        {
+          title: valueComCheckbox,
+          isSelected: false,
+        }]
+      })
+    }
+  }, []);
+
+
   return (
     <div>
       <h1>Dashboard</h1>
@@ -44,10 +72,10 @@ export const Dashboard = () => {
       <Link to='/entrar'>Login</Link>
 
       <p />
+      <h3>Lista</h3>
       <input 
         onKeyDown={handleInputKeyDown}
       />
-      <p>Lista</p>
       <ul>
         {lista.map((value, index) => {
           return (
@@ -56,6 +84,43 @@ export const Dashboard = () => {
         })}
       </ul>
 
+      <p />
+
+      <h3>Lista com Checkbox</h3>
+      <input 
+        onKeyDown={handleInputKeyDownComCheckbox}
+      />
+      <p>Itens Marcados: 
+        { listaComCheckbox.filter((listItemComCheckbox) => 
+            listItemComCheckbox.isSelected
+          ).length 
+        }
+      </p>
+      <ul>
+      { listaComCheckbox.map((listaComCheckboxItem, index) => {
+        return <li key={index}>
+            <input 
+              type="checkbox" 
+              checked={listaComCheckboxItem.isSelected}
+              onChange={() => {
+                setListaComCheckbox(oldListaComCheckbox => {
+                  return oldListaComCheckbox.map(oldListaComCheckboxItem => {
+                    const newIsSelected = oldListaComCheckboxItem.title === listaComCheckboxItem.title
+                    ? !oldListaComCheckboxItem.isSelected
+                    : oldListaComCheckboxItem.isSelected;
+                    
+                    return {
+                      ...oldListaComCheckboxItem,
+                      isSelected: newIsSelected,
+                    };
+                });
+              });
+              }}
+            />
+            {listaComCheckboxItem.title}
+          </li>
+        })}
+      </ul>
     </div>
   )
 }
