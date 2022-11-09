@@ -11,9 +11,18 @@ export const Dashboard = () => {
     title: string;
     isSelected: boolean
   }
+
+  interface ITarefa {
+    id: number,
+    title: string,
+    isCompleted: boolean,
+  }
+
   const [lista, setLista] = useState<string[]>(['Test 1', 'Test 2', 'Test 3']);
   
   const [listaComCheckbox, setListaComCheckbox] = useState<IListaComCheckBox[]>([]);
+
+  const [listaDb, setListaDb] = useState<ITarefa[]>([]);
   
   const handleInputKeyDown: KeyboardEventHandler<HTMLInputElement> = useCallback((e) => {
     if (e.key === "Enter") {
@@ -49,6 +58,28 @@ export const Dashboard = () => {
         {
           title: valueComCheckbox,
           isSelected: false,
+        }]
+      })
+    }
+  }, []);
+
+  const handleInputKeyDownDb: KeyboardEventHandler<HTMLInputElement> = useCallback((e) => {
+    if (e.key === "Enter") {
+      if(e.currentTarget.value.trim().length === 0) return;
+      
+      const valueDb = e.currentTarget.value;
+      e.currentTarget.value = '';
+      setListaDb((oldListaDb) => { 
+        // Verifica se o valor digitado já existe na lista
+        if (oldListaDb.some((listDbItem) => listDbItem.title === valueDb)) return oldListaDb;
+        
+        // caso não exista adiciona
+        return [
+          ...oldListaDb, 
+        {
+          id: oldListaDb.length,
+          title: valueDb,
+          isCompleted: false,
         }]
       })
     }
@@ -121,6 +152,44 @@ export const Dashboard = () => {
           </li>
         })}
       </ul>
+
+      <p />
+
+      <h3>Lista com Banco de Dados Mock</h3>
+      <input 
+        onKeyDown={handleInputKeyDownDb}
+      />
+      <p>Itens Marcados: 
+        { listaDb.filter((listaDbItem) => 
+            listaDbItem.isCompleted
+          ).length 
+        }
+      </p>
+      <ul>
+      { listaDb.map((listaDbItem, index) => {
+        return <li key={index}>
+            <input 
+              type="checkbox" 
+              checked={listaDbItem.isCompleted}
+              onChange={() => {
+                setListaDb(oldListaDb => {
+                  return oldListaDb.map(oldListaDbItem => {
+                    const newIsCompleted = oldListaDbItem.title === listaDbItem.title
+                    ? !oldListaDbItem.isCompleted
+                    : oldListaDbItem.isCompleted;
+                    
+                    return {
+                      ...oldListaDbItem,
+                      isSelected: newIsCompleted,
+                    };
+                });
+              });
+              }}
+            />
+            {listaDbItem.title}
+          </li>
+        })}
+      </ul>      
     </div>
   )
 }
