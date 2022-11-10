@@ -6,14 +6,14 @@
       "isCompleted": true
     },
     {
-      "id": 3,
-      "title": "Tarefa 03 - Descansar",
-      "isCompleted": true
-    },
-    {
       "title": "Tarefa 05 - Testar CRUD",
       "isCompleted": true,
       "id": 5
+    },
+    {
+      "title": "Tarefa 10 - Teste de tarefa",
+      "isCompleted": true,
+      "id": 6
     }
   ]
 }

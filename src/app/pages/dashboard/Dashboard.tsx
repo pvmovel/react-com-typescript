@@ -217,7 +217,7 @@ export const Dashboard = () => {
               checked={listaDbItem.isCompleted}
               onChange={() =>  handleToggleCompleteDb(listaDbItem.id) }
             />
-            {listaDbItem.title} (ID: {listaDbItem.id})
+            {listaDbItem.title}&nbsp;&nbsp;(ID: {listaDbItem.id})&nbsp;&nbsp;
             <button onClick={() => handleDeleteDb(listaDbItem.id)}>Apagar</button>
           </li>
         })}
