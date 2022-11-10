@@ -75,21 +75,20 @@ export const Dashboard = () => {
       
       const valueDb = e.currentTarget.value;
       e.currentTarget.value = '';
-      setListaDb((oldListaDb) => { 
-        // Verifica se o valor digitado já existe na lista
-        if (oldListaDb.some((listDbItem) => listDbItem.title === valueDb)) return oldListaDb;
-        
-        // caso não exista adiciona
-        return [
-          ...oldListaDb, 
-        {
-          id: oldListaDb.length,
-          title: valueDb,
-          isCompleted: false,
-        }]
-      })
+      
+      if (listaDb.some((listDbItem) => listDbItem.title === valueDb)) return;
+
+      TarefasService.create({ title: valueDb, isCompleted: false })
+        .then((result) => {
+          if (result instanceof ApiException) {
+            alert(result);
+          } else {
+            setListaDb((oldListaDb) => { return [ ...oldListaDb, result ] })
+          }
+        });
+
     }
-  }, []);
+  }, [listaDb]);
 
 
   return (
@@ -192,7 +191,7 @@ export const Dashboard = () => {
               });
               }}
             />
-            {listaDbItem.title}
+            {listaDbItem.title} (ID: {listaDbItem.id})
           </li>
         })}
       </ul>      

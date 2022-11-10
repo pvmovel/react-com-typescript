@@ -25,7 +25,7 @@ const getById = async (id: number): Promise<ITarefa | ApiException> => {
   }
 };
 
-const create = async (dataToCreate: Omit<ITarefa, 'id'>): Promise<ITarefa[] | ApiException> => {
+const create = async (dataToCreate: Omit<ITarefa, 'id'>): Promise<ITarefa | ApiException> => {
   try {
     const { data } = await Api().post<any>('/tarefas', dataToCreate);
     return data;
