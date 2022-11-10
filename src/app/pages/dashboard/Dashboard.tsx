@@ -1,6 +1,7 @@
-import { KeyboardEventHandler, useCallback, useRef, useState } from "react"
+import { KeyboardEventHandler, useCallback, useEffect, useRef, useState } from "react"
 import { Link } from "react-router-dom"
 import { useUsuarioLogado } from "../../shared/hooks";
+import { ApiException, ITarefa, TarefasService } from "../../shared/services";
 
 export const Dashboard = () => {
   const counterRef = useRef(0);
@@ -12,17 +13,22 @@ export const Dashboard = () => {
     isSelected: boolean
   }
 
-  interface ITarefa {
-    id: number,
-    title: string,
-    isCompleted: boolean,
-  }
-
-  const [lista, setLista] = useState<string[]>(['Test 1', 'Test 2', 'Test 3']);
+  const [lista, setLista] = useState<string[]>([]);
   
   const [listaComCheckbox, setListaComCheckbox] = useState<IListaComCheckBox[]>([]);
 
   const [listaDb, setListaDb] = useState<ITarefa[]>([]);
+
+  useEffect(() => {
+    TarefasService.getAll()
+    .then((result) => {
+      if (result instanceof ApiException) {
+        alert(result.message);
+      } else {
+        setListaDb(result)
+      }
+    });
+  }, [])
   
   const handleInputKeyDown: KeyboardEventHandler<HTMLInputElement> = useCallback((e) => {
     if (e.key === "Enter") {
@@ -180,7 +186,7 @@ export const Dashboard = () => {
                     
                     return {
                       ...oldListaDbItem,
-                      isSelected: newIsCompleted,
+                      isCompleted: newIsCompleted,
                     };
                 });
               });
