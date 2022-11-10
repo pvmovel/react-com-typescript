@@ -90,6 +90,45 @@ export const Dashboard = () => {
     }
   }, [listaDb]);
 
+  const handleToggleCompleteDb = useCallback((id: number) => {
+    const tarefaToUpdate = listaDb.find((tarefa) => tarefa.id === id);
+    if (!tarefaToUpdate) return;
+    
+    TarefasService.updateById(id, {
+      ...tarefaToUpdate,
+      isCompleted: !tarefaToUpdate.isCompleted
+    })
+      .then((result) => {
+        if (result instanceof ApiException) {
+          alert(result);
+        } else {
+          setListaDb(oldListaDb => {
+            return oldListaDb.map(oldListaDbItem => {
+              
+              if (oldListaDbItem.id === id) return result;
+              
+              return oldListaDbItem;
+            
+            });
+          });
+        }        
+      })
+  }, [listaDb]);
+
+
+  const handleDeleteDb = useCallback((id: number) => {
+    
+    TarefasService.deleteById(id)
+      .then((result) => {
+        if (result instanceof ApiException) {
+          alert(result);
+        } else {
+          setListaDb(oldListaDb => {
+            return oldListaDb.filter(oldListaDbItem => oldListaDbItem.id !== id);
+          });
+        }        
+      })
+  }, []);
 
   return (
     <div>
@@ -176,22 +215,10 @@ export const Dashboard = () => {
             <input 
               type="checkbox" 
               checked={listaDbItem.isCompleted}
-              onChange={() => {
-                setListaDb(oldListaDb => {
-                  return oldListaDb.map(oldListaDbItem => {
-                    const newIsCompleted = oldListaDbItem.title === listaDbItem.title
-                    ? !oldListaDbItem.isCompleted
-                    : oldListaDbItem.isCompleted;
-                    
-                    return {
-                      ...oldListaDbItem,
-                      isCompleted: newIsCompleted,
-                    };
-                });
-              });
-              }}
+              onChange={() =>  handleToggleCompleteDb(listaDbItem.id) }
             />
             {listaDbItem.title} (ID: {listaDbItem.id})
+            <button onClick={() => handleDeleteDb(listaDbItem.id)}>Apagar</button>
           </li>
         })}
       </ul>      
